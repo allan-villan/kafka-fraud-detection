@@ -6,6 +6,8 @@ A Streaming Fraud Detection System that monitors user activity and flags the tra
 
 - Kafka: 1.3.5
 
+- Docker: 20.10.17
+
 ### Considerations:
 
 Because a fraud detection system relies on streamed data to produce alerts as soon as possible,
