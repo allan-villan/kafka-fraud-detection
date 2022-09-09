@@ -1,5 +1,5 @@
 # kafka-fraud-detection
-A Streaming Fraud Detection System that monitors user activity and flags the transaction as either legit or fradulant using Kafka and Python.
+A Streaming Fraud Detection System that monitors user activity and flags the transaction as either legit or fraudulent using Kafka and Python.
 
 ## Requirements:
 - Python: 3.10.4
@@ -11,15 +11,15 @@ A Streaming Fraud Detection System that monitors user activity and flags the tra
 ### Considerations:
 
 Because a fraud detection system relies on streamed data to produce alerts as soon as possible,
-Apache Kafka is used to handle the streamed data due to its capabilities and the robust community
+Apache Kafka is used to handle the streamed data due to its streaming capabilities and the robust community
 surrounding this wonderful framework. 
 
 ### Architecture diagram:
 ![Kafka diagram drawio](https://user-images.githubusercontent.com/84660320/189236982-0eeee525-d074-48b4-aff5-b24ae9193658.png)
 
-Two clusters are connected through a network to better separate processes:
-- Source Cluster handles fraud detection
-- Destination Cluster communicates the information processed by Source Cluster
+Two clusters are connected through a network:
+- The **Source Cluster** handles fraud detection
+- The **Destination Cluster** communicates the information processed by Source Cluster and regulates processes through **ZooKeeper**
 
 ### Project Layout:
 <img width="311" alt="project_layout" src="https://user-images.githubusercontent.com/84660320/189238313-8e01728f-a13e-461a-80c0-ba39840d0c2f.png">
@@ -35,16 +35,16 @@ First of all, we want to start the **Destination Cluster** first since it acts a
 *This is what be what the terminal should look like...*
 <img width="757" alt="kafka_container_output" src="https://user-images.githubusercontent.com/84660320/189237794-fe89842e-1cb4-498b-928e-3b93d7a48e6e.png">
 
-All the amounts are under $900 because the **Topic** filtered transactions it flagged as suspicious.
+Now, we need to spin up the **Source Cluster** to start feeding data to be processed.
 
-> To run the **Source Cluster** that generates data to our **Destination Cluster** run:
+> Use this command to run the **Source Cluster**:
 
 `docker-compose build && docker-compose up`
 
 The **Generator** will then begin generating random *source IDs*, *target IDs*, and random *amounts* "spent".
 <img width="756" alt="generator_output" src="https://user-images.githubusercontent.com/84660320/189238459-cbe5c632-5ede-4e8c-8972-98579c05280d.png">
 
-Because the data is filtered for suspicious transactions, any transaction over $900 was marked as suspicious by the **Topic** in the **Source Cluster**. All the data displayed below are the transactions that were marked as legit and sent to the **Destination Cluster**.
+Because the data is filtered for suspicious transactions, all transactions over $900 were marked as suspicious by the **Topic** in the **Source Cluster**. The data displayed passed the fraudulent check and is being received by the **Destination Cluster**.
 
 <img width="659" alt="detector_output" src="https://user-images.githubusercontent.com/84660320/189238925-5fdaee5d-0da3-4e76-a529-d5b8f9a671d9.png">
 
