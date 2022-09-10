@@ -11,22 +11,23 @@ A Streaming Fraud Detection System that monitors user activity and flags the tra
 ### Considerations:
 
 Because a fraud detection system relies on streamed data to produce alerts as soon as possible,
-Apache Kafka is used to handle the streamed data due to its streaming capabilities and the robust community
+Apache Kafka is used to handle the incoming data due to its streaming capabilities and the robust community
 surrounding this wonderful framework. 
 
 ### Architecture diagram:
 ![Kafka diagram drawio](https://user-images.githubusercontent.com/84660320/189236982-0eeee525-d074-48b4-aff5-b24ae9193658.png)
 
-Two clusters are connected through a network:
+Two clusters are connected through a custom network labeled: ***kafka-network***
 - The **Source Cluster** handles fraud detection
-- The **Destination Cluster** communicates the information processed by Source Cluster and regulates processes through **ZooKeeper**
+- The **Destination Cluster** communicates the information processed by the Source Cluster and regulates processes through **ZooKeeper**
 
 ### Project Layout:
+To satisfy the architectural design, two Docker containers are used.
+
 <img width="311" alt="project_layout" src="https://user-images.githubusercontent.com/84660320/189238313-8e01728f-a13e-461a-80c0-ba39840d0c2f.png">
 
 ### Running the program:
 First of all, we want to start the **Destination Cluster** first since it acts as the sink in this pipeline.
-
 
 > To spin up the Destination Cluster, run:
 
@@ -42,11 +43,14 @@ Now, we need to spin up the **Source Cluster** to start feeding data to be proce
 `docker-compose build && docker-compose up`
 
 The **Generator** will then begin generating random *source IDs*, *target IDs*, and random *amounts* "spent".
+
 <img width="756" alt="generator_output" src="https://user-images.githubusercontent.com/84660320/189238459-cbe5c632-5ede-4e8c-8972-98579c05280d.png">
 
-Because the data is filtered for suspicious transactions, all transactions over $900 were marked as suspicious by the **Topic** in the **Source Cluster**. The data displayed passed the fraudulent check and is being received by the **Destination Cluster**.
+All transactions over $900 were marked as fraudulent by the **Topic** in the **Source Cluster**, so nothing over that amount should apear in the terminal. The data displayed below passed the fraudulent check and is being received by the **Destination Cluster**.
 
 <img width="659" alt="detector_output" src="https://user-images.githubusercontent.com/84660320/189238925-5fdaee5d-0da3-4e76-a529-d5b8f9a671d9.png">
+
+That concludes the project! 
 
 ### Reflection:
 Looking back, this was a great opportunity to learn about Kafka that utilized it in a reasonable example. I'm excited to apply this framework to 
